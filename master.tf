@@ -1,11 +1,4 @@
-provider "libvirt" {
-  uri = "qemu:///system"
-}
 
-#provider "libvirt" {
-#  alias = "server2"
-#  uri   = "qemu+ssh://root@192.168.100.10/system"
-#}
 
 resource "libvirt_volume" "k8s-qcow2" {
   name   = "k8s.qcow2"
@@ -15,6 +8,9 @@ resource "libvirt_volume" "k8s-qcow2" {
   format = "qcow2"
 }
 
+data "template_file" "user_data" {
+  template = "${file("${path.module}/cloud_init.cfg")}"
+}
 # Define KVM domain to create
 resource "libvirt_domain" "master" {
   name   = "master"
