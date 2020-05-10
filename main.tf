@@ -11,11 +11,11 @@ resource "libvirt_volume" "k8s-qcow2" {
 resource "libvirt_cloudinit_disk" "commoninit" {
           name = "commoninit.iso"
           pool = "MyVM" #CHANGEME
-          user_data = "data.template_file.user_data.rendered"
+          user_data = data.template_file.user_data.rendered
           }
 
 data "template_file" "user_data" {
-  template = "${file("${path.module}/cloud_init.cfg")}"
+  template = file("${path.module}/cloud_init.cfg")
 }
 # Define KVM domain to create
 resource "libvirt_domain" "master" {
