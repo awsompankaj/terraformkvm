@@ -8,6 +8,12 @@ resource "libvirt_volume" "k8s-qcow2" {
   format = "qcow2"
 }
 
+resource "libvirt_cloudinit_disk" "commoninit" {
+          name = "commoninit.iso"
+          pool = "MyVM" #CHANGEME
+          user_data = "data.template_file.user_data.rendered"
+          }
+
 data "template_file" "user_data" {
   template = "${file("${path.module}/cloud_init.cfg")}"
 }
@@ -21,7 +27,9 @@ resource "libvirt_domain" "master" {
     network_name = "default"
   
   }
-
+ 
+ cloudinit = libvirt_cloudinit_disk.commoninit.id
+ 
   disk {
     volume_id = libvirt_volume.k8s-qcow2.id
   }
