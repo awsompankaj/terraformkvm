@@ -17,12 +17,12 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 }
 
 data "template_file" "user_data" {
+  count = length(var.vm_names)
   template = file("${path.module}/cloud_init.cfg")
     vars = {
     HOSTNAME = var.vm_names[count.index]
   }
-  count = length(var.vm_names)
-}
+  }
 
 # Define KVM domain to create
 resource "libvirt_domain" "master" {
